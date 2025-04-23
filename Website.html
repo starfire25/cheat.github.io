@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Experiments Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f0f0f0;
+    }
+    button {
+      margin-bottom: 1rem;
+      padding: 0.6rem 1.2rem;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #content {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Experiment Viewer</h1>
+
+  <button onclick="showExperiment(2)">Experiment 2</button>
+  <button onclick="showExperiment(4)">Experiment 4</button>
+  <button onclick="showExperiment(5)">Experiment 5</button>
+  <button onclick="showExperiment(6)">Experiment 6</button>
+  <button onclick="showExperiment(8)">Experiment 8</button>
+  <button onclick="showExperiment(9)">Experiment 9</button>
+  <button onclick="showExperiment(10)">Experiment 10</button>
+  <button onclick="showExperiment(11)">Experiment 11</button>
+  <button onclick="showExperiment(12)">Experiment 12</button>
+  <button onclick="showExperiment(13)">Experiment 13</button>
+
+  <div id="content">Click a button to view an experiment.</div>
+
+  <script>
+    const experiments = {
+      2: `public class Helloworld {  
+    public static void main(String args[])  
+    {  
+        System.out.println("Hello World");  
+    }  
+} `,
+      
+      3: `import java.util.Scanner; 
+public class FibonacciSeries { 
+    public static void main(String[] args) { 
+        Scanner scanner = new Scanner(System.in); 
+         
+        System.out.print("Enter the number of terms: "); 
+        int n = scanner.nextInt(); 
+         
+        int first = 0, second = 1; 
+         
+        System.out.println("Fibonacci Series:"); 
+        for (int i = 0; i < n; i++) { 
+            System.out.print(first + " "); 
+            int next = first + second; 
+            first = second; 
+            second = next; 
+        } 
+        scanner.close(); 
+    } 
+}`,
+      
+      4: `
+       the writing method and creating  
+objects in java.  
+      public class exp4{  
+int x=10;  
+public static void main (String[] arg){  
+exp4 myobj=new exp4();  
+System.out.println(myobj.x);  
+}  
+}  
+
+writing method and creating  
+Multiple objects in java.  
+public class exp4 {  
+int x = 10;  
+public static void main(String[] args) {  
+exp4 obj1 = new exp4 ();  
+exp4 obj2 = new exp4();  
+exp4 obj3 = new exp4 ();  
+System.out.println("Object 1: " + obj1.x);  
+System.out.println("Object 2: " + obj2.x);  
+System.out.println("Object 3: " + obj3.x);  
+}  
+} 
+
+writing method and creating objects  
+in java using multiple class.   
+public class exp4a{  
+int x=10;  
+}  
+public class exp4b{  
+public static void main (String[] arg){  
+exp4a myobj=new exp4a();  
+System.out.println(myobj.x);  
+}  
+}  
+`,
+      5:`
+       Write a program that displays your Personal details in one file. Create another  
+file and call the method of first class.  
+      public class Exp5a{  
+public void DetailsInfo() {  
+System.out.println("Name: Diya Koli");  
+System.out.println("Roll No: 33 ");  
+System.out.println("Course: IT");  
+System.out.println("College: UMIT");  
+}  
+}  
+//Programe:- Write a program that displays your Personal details in one file. Create another  
+file and call the method of first class.  
+public class Exp5b{  
+public static void main(String[] args) {  
+Exp5a details = new Exp5a();  
+details.DetailsInfo();  
+}  
+}  `,
+      6:`
+      Write a program to implement Single inheritance in Java 
+      class Person { 
+String per = "Diya "; 
+void PersonInfo() { 
+System.out.println("Person name is " + per); 
+} 
+} 
+class Student extends Person { 
+int rollNumber = 33; 
+void StudentInfo() { 
+System.out.println("Person " + per + " is a student"); 
+System.out.println("whose Roll Number: " + rollNumber); 
+} 
+} 
+public class SingleInheritance { 
+public static void main(String[] args) { 
+Student stu = new Student(); 
+stu.PersonInfo(); 
+stu.StudentInfo(); 
+} 
+}
+
+Write a Program to implement Multiple Inheritance  in Java 
+interface Person { 
+void Name(); 
+} 
+interface Employee { 
+void JobTitle(); 
+} 
+class Manager implements Person, Employee { 
+public void Name() { 
+System.out.println("Name: Diya"); 
+} 
+public void JobTitle() { 
+System.out.println("Job Title: Manager"); 
+} 
+} 
+public class MultipleInheritance { 
+public static void main(String[] args) { 
+Manager mgr = new Manager(); 
+mgr.Name(); 
+mgr.JobTitle(); 
+} 
+} 
+
+Write a program for Multilevel Inheritance in Java 
+class Tree { 
+void provideOxygen() { 
+System.out.println("Trees provide oxygen."); 
+} 
+} 
+class Fruittree extends Tree { 
+void bearFruit() { 
+System.out.println("This tree bears fruits."); 
+} 
+} 
+class Mangotree extends Fruittree { 
+void type() { 
+System.out.println("This is a Mango tree."); 
+} 
+} 
+public class MultilevelInheritance { 
+public static void main(String[] args) { 
+Mangotree mango = new Mangotree(); 
+System.out.println("Mango Tree:"); 
+mango.provideOxygen(); 
+mango.bearFruit(); 
+mango.type(); 
+} 
+}
+`,
+      8:`
+       Write a Java Program to Illustrate Automatic Type Conversion 
+Code:- 
+public class Automatictype { 
+    public static void main(String[] args) 
+    { 
+        int i = 100; 
+        long l = i; 
+        float f = l; 
+        System.out.println("Int value " + i); 
+        System.out.println("Long value " + l); 
+        System.out.println("Float value " + f); 
+    }   
+}
+    
+Write a Java program to illustrate Incompatible data Type for Explicit 
+Type Conversion 
+Code:- 
+public class Incompatibleconversion { 
+    public static void main(String[] args) { 
+        char ch = 'c'; 
+        int num = 88; 
+        ch = num; 
+    }     
+}
+    
+ Write a Java program to Illustrate Explicit Type Conversion 
+Code:- 
+public class Explicittype { 
+    public static void main(String[] args) { 
+        double d = 100.04; 
+        long l = (long) d;  
+        int i = (int) l; 
+ 
+        System.out.println("Double value " + d); 
+        System.out.println("Long value " + l); 
+        System.out.println("Int value " + i); 
+    }   
+} 
+    
+ Write a Java Program to Illustrate Conversion of Integer and Double to 
+Byte 
+Code:- 
+public class ByteConversion { 
+    public static void main(String args[]) { 
+        byte b; 
+        int i = 257; 
+        double d = 323.142; 
+        System.out.println("Conversion of int to byte."); 
+        b = (byte) i;   
+        System.out.println("i = " + i + " b = " + b); 
+        System.out.println("Conversion of double to byte."); 
+        b = (byte) d;   
+        System.out.println("d = " + d + " b= " + b); 
+    } 
+} 
+    
+ Write a Java program to Illustrate Type Casting in Integer to Byte 
+Code:- 
+public class Typecasting { 
+    public static void main(String args[]) { 
+        byte b = 50; 
+        b = (byte)(b * 2);  
+ 
+        System.out.println(b); 
+    } 
+}`,
+      9:` Write a program to implement an user defined interface in Java.  
+Code:-  
+interface Calculator {  
+    int add(int a, int b);  
+}  
+class SimpleCalculator implements Calculator {  
+    @Override  
+    public int add(int a, int b) {  
+        return a + b;  
+    }  
+}  
+class user_defin_interface {  
+    public static void main(String[] args) {  
+        SimpleCalculator calculator = new SimpleCalculator();  
+        int sum = calculator.add(10, 5);  
+        System.out.println("Sum: " + sum);  
+    }  
+}  
+    
+`,
+      10:`Write a program in Java to show "Click Me" button, one text field and text area   
+Code:-  
+import java.awt.*;  
+import java.awt.event.ActionEvent;  
+import java.awt.event.ActionListener;  
+   
+public class Exp10 extends Frame {  
+    Exp10() {  
+        TextField textField = new TextField();  
+        textField.setBounds(20, 50, 200, 30);  
+  
+        TextArea textArea = new TextArea();  
+        textArea.setBounds(20, 100, 250, 100);  
+  
+        Button clickMeButton = new Button("Click Me");  
+        clickMeButton.setBounds(20, 220, 100, 30);  
+  
+        clickMeButton.addActionListener(new ActionListener() {  
+            @Override  
+            public void actionPerformed(ActionEvent e) {  
+                String inputText = textField.getText();  
+                textArea.append(inputText + "\n");  
+                textField.setText("");  
+            }  
+        });  
+  
+        add(textField);  
+        add(textArea);  
+        add(clickMeButton);  
+  
+        setSize(300, 300);  
+        setLayout(null);  
+        setVisible(true);  
+    }  
+  
+    public static void main(String[] args) {  
+        new Exp10();  
+    }  
+}  `,
+      12:`Write a JAVA program to implement the flow layout 
+import javax.swing.*; 
+import java.awt.*; 
+public class FlowLayoutExample { 
+public static void main(String[] args) { 
+JFrame frame = new JFrame("FlowLayout Example"); 
+frame.setLayout(new FlowLayout()); 
+frame.add(new JButton("Button 1")); 
+frame.add(new JButton("Button 2")); 
+frame.add(new JButton("Button 3")); 
+frame.pack(); 
+frame.setVisible(true); 
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+} 
+}
+
+Write a JAVA Program to implement the Border layout 
+import javax.swing.*; 
+import java.awt.*; 
+public class BorderLayoutExample { 
+public static void main(String[] args) { 
+JFrame frame = new JFrame("BorderLayout Example"); 
+frame.setLayout(new BorderLayout()); 
+frame.add(new JButton("North"), BorderLayout.NORTH); 
+frame.add(new JButton("South"), BorderLayout.SOUTH); 
+frame.add(new JButton("East"), BorderLayout.EAST); 
+frame.add(new JButton("West"), BorderLayout.WEST); 
+frame.add(new JButton("Center"), BorderLayout.CENTER); 
+frame.pack(); 
+frame.setVisible(true); 
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+}
+
+Write a JAVA Program to implement the Grid layout 
+import javax.swing.*; 
+import java.awt.*; 
+public class GridLayoutExample { 
+public static void main(String[] args) { 
+JFrame frame = new JFrame("GridLayout Example"); 
+frame.setLayout(new GridLayout(3, 3)); 
+for (int i = 1; i <= 9; i++) { 
+frame.add(new JButton("Button " + i)); 
+} 
+frame.pack(); 
+frame.setVisible(true); 
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+} 
+}`,
+      13:`]Write a JAVA Program to implement the Card layout 
+import javax.swing.*; 
+import java.awt.*; 
+import java.awt.event.ActionEvent; 
+import java.awt.event.ActionListener; 
+public class CardLayoutExample { 
+public static void main(String[] args) { 
+JFrame frame = new JFrame("CardLayout Example"); 
+CardLayout cardLayout = new CardLayout(); 
+JPanel cardPanel = new JPanel(cardLayout); 
+JButton button1 = new JButton("Card 1"); 
+JButton button2 = new JButton("Card 2"); 
+JButton button3 = new JButton("Card 3"); 
+cardPanel.add(button1, "Card 1"); 
+cardPanel.add(button2, "Card 2"); 
+cardPanel.add(button3, "Card 3"); 
+frame.add(cardPanel); 
+frame.pack(); 
+frame.setVisible(true); 
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+button1.addActionListener(e -> cardLayout.show(cardPanel, "Card 2")); 
+button2.addActionListener(e -> cardLayout.show(cardPanel, "Card 3")); 
+button3.addActionListener(e -> cardLayout.show(cardPanel, "Card 1")); 
+} 
+}
+
+]Write a JAVA Program to implement the Box layout 
+import java.awt.*; 
+import javax.swing.*; 
+public class BoxLayoutExample1 extends Frame { 
+Button buttons[]; 
+public BoxLayoutExample1 () { 
+buttons = new Button [5]; 
+for (int i = 0;i<5;i++) { 
+buttons[i] = new Button ("Button " + (i + 1)); 
+// adding the buttons so that it can be displayed 
+add (buttons[i]); 
+} 
+// the buttons will be placed horizontally 
+setLayout (new BoxLayout (this, BoxLayout.Y_AXIS)); 
+setSize(400,400); 
+setVisible(true); 
+} 
+// main method 
+public static void main(String args[]){ 
+BoxLayoutExample1 b=new BoxLayoutExample1(); 
+} 
+}
+
+Write a JAVA Program to implement the Gridbag layout 
+import javax.swing.*; 
+import java.awt.*; 
+public class GridBagLayoutExample { 
+public static void main(String[] args) { 
+JFrame frame = new JFrame("GridBagLayout Example"); 
+JPanel panel = new JPanel(new GridBagLayout()); 
+GridBagConstraints constraints = new GridBagConstraints(); 
+constraints.fill = GridBagConstraints.HORIZONTAL; 
+JButton button1 = new JButton("Button 1"); 
+JButton button2 = new JButton("Button 2"); 
+constraints.gridx = 0; 
+constraints.gridy = 0; 
+panel.add(button1, constraints); 
+constraints.gridx = 1; 
+panel.add(button2, constraints); 
+frame.add(panel); 
+frame.pack(); 
+frame.setVisible(true); 
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+} 
+}
+`,
+      11:`Write a JAVA program to design a frame in java and implement the given layout 
+import javax.swing.*; 
+public class JframeExample { 
+public static void main(String[] args) { 
+// Create JFrame 
+JFrame frame = new JFrame("JFrame Example"); 
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+frame.setSize(500, 400); 
+frame.setLayout(null); // Using null layout for manual positioning 
+// Create MenuBar 
+JMenuBar menuBar = new JMenuBar(); 
+JMenu fileMenu = new JMenu("File"); 
+JMenuItem openItem = new JMenuItem("Open"); 
+JMenuItem exitItem = new JMenuItem("Exit"); 
+// Add items to File menu 
+fileMenu.add(openItem); 
+fileMenu.add(exitItem); 
+menuBar.add(fileMenu); 
+frame.setJMenuBar(menuBar); 
+// Create Button 
+JButton button = new JButton("Click Me"); 
+button.setBounds(380, 20, 100, 30); // Adjusted position to match image 
+// Exit action 
+exitItem.addActionListener(e -> System.exit(0)); 
+// Add components to JFrame 
+frame.add(button); 
+// Make frame visible 
+frame.setVisible(true); 
+} 
+}`
+    };
+
+    function showExperiment(num) {
+      document.getElementById('content').textContent = experiments[num] || "Experiment not found.";
+    }
+  </script>
+
+</body>
+</html>
