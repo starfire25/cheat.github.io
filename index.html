@@ -15,13 +15,34 @@
       font-size: 16px;
       cursor: pointer;
     }
-    #content {
+    #content-wrapper {
       margin-top: 2rem;
-      padding: 1rem;
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      position: relative;
+    }
+    #content {
       white-space: pre-wrap;
+      cursor: text;
+      user-select: text;
+      font-family: monospace;
+    }
+    #copyBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 0.4rem 0.8rem;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    #copyBtn:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
@@ -29,458 +50,847 @@
 
   <h1>Experiment Viewer</h1>
 
-  <button onclick="showExperiment(2)">Experiment 2(hello world)</button>
-  <button onclick="showExperiment(3)">Experiment 3(fibonnaci Series)</button>
-  <button onclick="showExperiment(4)">Experiment 4(method and object)</button>
-  <button onclick="showExperiment(5)">Experiment 5(creating a file and calling the first file method)</button>
-  <button onclick="showExperiment(6)">Experiment 6(Inheritance)</button>
-  <button onclick="showExperiment(8)">Experiment 8(Type Conversion)</button>
-  <button onclick="showExperiment(9)">Experiment 9(User defined Interface)</button>
-  <button onclick="showExperiment(10)">Experiment 10(Button'click me button')</button>
-  <button onclick="showExperiment(11)">Experiment 11(frame)</button>
-  <button onclick="showExperiment(12)">Experiment 12(flow,border,grid)</button>
-  <button onclick="showExperiment(13)">Experiment 13(Card,box,gridbag)</button>
+  <!-- Your experiment buttons -->
+  <button onclick="showExperiment(2)">Experiment 2</button>
+  <button onclick="showExperiment(3)">Experiment 3(8-puzzle problem)</button>
+  <button onclick="showExperiment(4)">Experiment 4(Tower of Hanoi)</button>
+  <button onclick="showExperiment(5)">Experiment 5(NIM game)</button>
+  <button onclick="showExperiment(6)">Experiment 6(Jug Problem)</button>
+  <button onclick="showExperiment(7)">Experiment 7(missionaries and cannibals)</button>
+  <button onclick="showExperiment(8)">Experiment 8(Banana Problem)</button>
+  <button onclick="showExperiment(9)">Experiment 9 (Tic Tac Toe)</button>
+  <button onclick="showExperiment(10)">Experiment 10(Block World)</button>
+  <button onclick="showExperiment(11)">Experiment 11(Sussman Anomaly)</button>
+  <button onclick="showExperiment(12)">Experiment 12(Robot moving)</button>
 
-  <div id="content">Click a button to view an experiment.</div>
+  <!-- Code area -->
+  <div id="content-wrapper">
+    <button id="copyBtn" onclick="copyContent()">Copy Code</button>
+    <pre id="content">Click a button to view an experiment.</pre>
+  </div>
 
+  <!-- Script -->
   <script>
     const experiments = {
-      2: `public class Helloworld {  
-    public static void main(String args[])  
-    {  
-        System.out.println("Hello World");  
-    }  
-} `,
+        2:` father(machindra, mahadev). 
+father(mahadev, laxmi). 
+father(mahadev, om). 
+mother(bhagyshree, laxmi). 
+mother(bhagyshree, om). 
+male(mahadev). 
+male(om). 
+male(machindra). 
+female(bhagyshree). 
+female(laxmi). 
+sibling(X, Y) :- father(F, X), father(F, Y), X \= Y. 
+grandfather(X, Y) :- father(X, Z), father(Z, Y).  `,
       
-      3: `import java.util.Scanner; 
-public class FibonacciSeries { 
-    public static void main(String[] args) { 
-        Scanner scanner = new Scanner(System.in); 
-         
-        System.out.print("Enter the number of terms: "); 
-        int n = scanner.nextInt(); 
-         
-        int first = 0, second = 1; 
-         
-        System.out.println("Fibonacci Series:"); 
-        for (int i = 0; i < n; i++) { 
-            System.out.print(first + " "); 
-            int next = first + second; 
-            first = second; 
-            second = next; 
-        } 
-        scanner.close(); 
-    } 
-}`,
+      3: `from copy import deepcopy
+import numpy as np
+import time
+import sys
+
+# Takes the input of current states and evaluates the best path to goal state
+def bestsolution(state):
+    bestsol = np.array([], int).reshape(-1, 9)
+    count = len(state) - 1
+    while count != -1:
+        bestsol = np.insert(bestsol, 0, state[count]['puzzle'], 0)
+        count = state[count]['parent']
+    return bestsol.reshape(-1, 3, 3)
+
+# Calculate Manhattan distance cost between each digit of puzzle (start state) and the goal state
+def manhattan(puzzle, goal):
+    a = abs(puzzle // 3 - goal // 3)
+    b = abs(puzzle % 3 - goal % 3)
+    mhcost = a + b
+    return sum(mhcost[1:])
+
+# Calculates the number of misplaced tiles in the current state as compared to the goal state
+def misplaced_tiles(puzzle, goal):
+    mscost = np.sum(puzzle != goal) - 1
+    return mscost if mscost > 0 else 0
+
+# Identify the coordinates of each value in the puzzle
+def coordinates(puzzle):
+    pos = np.array(range(9))
+    for p, q in enumerate(puzzle):
+        pos[q] = p
+    return pos
+
+# Start of 8 puzzle evaluation using Manhattan heuristics
+def evaluvate(puzzle, goal):
+    steps = np.array([
+        ('up', [0, 1, 2], -3),
+        ('down', [6, 7, 8], 3),
+        ('left', [0, 3, 6], -1),
+        ('right', [2, 5, 8], 1)
+    ], dtype=[('move', str, 1), ('position', list), ('head', int)])
+
+    dtstate = [('puzzle', list), ('parent', int), ('gn', int), ('hn', int)]
+
+    costg = coordinates(goal)
+    parent = -1
+    gn = 0
+    hn = manhattan(coordinates(puzzle), costg)
+    state = np.array([(puzzle, parent, gn, hn)], dtstate)
+
+    dtpriority = [('position', int), ('fn', int)]
+    priority = np.array([(0, hn)], dtpriority)
+
+    start_time = time.time()
+
+    while True:
+        priority = np.sort(priority, kind='mergesort', order=['fn', 'position'])
+        position, fn = priority[0]
+        priority = np.delete(priority, 0, 0)
+
+        puzzle, parent, gn, hn = state[position]
+        puzzle = np.array(puzzle)
+
+        blank = int(np.where(puzzle == 0)[0])
+        gn += 1
+
+        for s in steps:
+            if blank not in s['position']:
+                openstates = deepcopy(puzzle)
+                openstates[blank], openstates[blank + s['head']] = openstates[blank + s['head']], openstates[blank]
+
+                if ~(np.all(list(state['puzzle']) == openstates, 1)).any():
+                    if (time.time() - start_time) > 20:
+                        print("The 8 puzzle is unsolvable! \n")
+                        sys.exit()
+
+                    hn = manhattan(coordinates(openstates), costg)
+                    q = np.array([(openstates, position, gn, hn)], dtstate)
+                    state = np.append(state, q, 0)
+
+                    fn = gn + hn
+                    q = np.array([(len(state) - 1, fn)], dtpriority)
+                    priority = np.append(priority, q, 0)
+
+                    if np.array_equal(openstates, goal):
+                        print('The 8 puzzle is solvable! \n')
+                        return state, len(priority)
+    return state, len(priority)
+
+# Start of 8 puzzle evaluation using Misplaced Tiles heuristics
+def evaluvate_misplaced(puzzle, goal):
+    steps = np.array([
+        ('up', [0, 1, 2], -3),
+        ('down', [6, 7, 8], 3),
+        ('left', [0, 3, 6], -1),
+        ('right', [2, 5, 8], 1)
+    ], dtype=[('move', str, 1), ('position', list), ('head', int)])
+
+    dtstate = [('puzzle', list), ('parent', int), ('gn', int), ('hn', int)]
+
+    costg = coordinates(goal)
+    parent = -1
+    gn = 0
+    hn = misplaced_tiles(coordinates(puzzle), costg)
+    state = np.array([(puzzle, parent, gn, hn)], dtstate)
+
+    dtpriority = [('position', int), ('fn', int)]
+    priority = np.array([(0, hn)], dtpriority)
+
+    start_time = time.time()
+
+    while True:
+        priority = np.sort(priority, kind='mergesort', order=['fn', 'position'])
+        position, fn = priority[0]
+        priority = np.delete(priority, 0, 0)
+
+        puzzle, parent, gn, hn = state[position]
+        puzzle = np.array(puzzle)
+
+        blank = int(np.where(puzzle == 0)[0])
+        gn += 1
+
+        for s in steps:
+            if blank not in s['position']:
+                openstates = deepcopy(puzzle)
+                openstates[blank], openstates[blank + s['head']] = openstates[blank + s['head']], openstates[blank]
+
+                if ~(np.all(list(state['puzzle']) == openstates, 1)).any():
+                    if (time.time() - start_time) > 20:
+                        print("The 8 puzzle is unsolvable! \n")
+                        sys.exit()
+
+                    hn = misplaced_tiles(coordinates(openstates), costg)
+                    q = np.array([(openstates, position, gn, hn)], dtstate)
+                    state = np.append(state, q, 0)
+
+                    fn = gn + hn
+                    q = np.array([(len(state) - 1, fn)], dtpriority)
+                    priority = np.append(priority, q, 0)
+
+                    if np.array_equal(openstates, goal):
+                        print('The 8 puzzle is solvable! \n')
+                        return state, len(priority)
+
+# ---------------- Program Start ----------------
+
+# User input for initial state
+puzzle = []
+print("Input values from 0-8 for start state:")
+for i in range(9):
+    x = int(input(f"Enter value {i+1}: "))
+    puzzle.append(x)
+
+# User input for goal state
+goal = []
+print("Input values from 0-8 for goal state:")
+for i in range(9):
+    x = int(input(f"Enter value {i+1}: "))
+    goal.append(x)
+
+n = int(input("Choose heuristic:\n1. Manhattan distance\n2. Misplaced tiles\nEnter choice: "))
+
+if n == 1:
+    state, visited = evaluvate(puzzle, goal)
+    bestpath = bestsolution(state)
+    print(str(bestpath).replace('[', ' ').replace(']', ''))
+    totalmoves = len(bestpath) - 1
+    print('Steps to reach goal:', totalmoves)
+    visit = len(state) - visited
+    print('Total nodes visited:', visit, "\n")
+    print('Total nodes generated:', len(state))
+
+elif n == 2:
+    state, visited = evaluvate_misplaced(puzzle, goal)
+    bestpath = bestsolution(state)
+    print(str(bestpath).replace('[', ' ').replace(']', ''))
+    totalmoves = len(bestpath) - 1
+    print('Steps to reach goal:', totalmoves)
+    visit = len(state) - visited
+    print('Total nodes visited:', visit, "\n")
+    print('Total nodes generated:', len(state))
+
+else:
+    print("Invalid choice. Exiting.")
+`,
       
-      4: `
-       the writing method and creating  
-objects in java.  
-      public class exp4{  
-int x=10;  
-public static void main (String[] arg){  
-exp4 myobj=new exp4();  
-System.out.println(myobj.x);  
-}  
-}  
-
-writing method and creating  
-Multiple objects in java.  
-public class exp4 {  
-int x = 10;  
-public static void main(String[] args) {  
-exp4 obj1 = new exp4 ();  
-exp4 obj2 = new exp4();  
-exp4 obj3 = new exp4 ();  
-System.out.println("Object 1: " + obj1.x);  
-System.out.println("Object 2: " + obj2.x);  
-System.out.println("Object 3: " + obj3.x);  
-}  
-} 
-
-writing method and creating objects  
-in java using multiple class.   
-public class exp4a{  
-int x=10;  
-}  
-public class exp4b{  
-public static void main (String[] arg){  
-exp4a myobj=new exp4a();  
-System.out.println(myobj.x);  
-}  
-}  
-`,
-      5:`
-       Write a program that displays your Personal details in one file. Create another  
-file and call the method of first class.  
-      public class Exp5a{  
-public void DetailsInfo() {  
-System.out.println("Name: Diya Koli");  
-System.out.println("Roll No: 33 ");  
-System.out.println("Course: IT");  
-System.out.println("College: UMIT");  
-}  
-}  
-//Programe:- Write a program that displays your Personal details in one file. Create another  
-file and call the method of first class.  
-public class Exp5b{  
-public static void main(String[] args) {  
-Exp5a details = new Exp5a();  
-details.DetailsInfo();  
-}  
-}  `,
-      6:`
-      Write a program to implement Single inheritance in Java 
-      class Person { 
-String per = "Diya "; 
-void PersonInfo() { 
-System.out.println("Person name is " + per); 
-} 
-} 
-class Student extends Person { 
-int rollNumber = 33; 
-void StudentInfo() { 
-System.out.println("Person " + per + " is a student"); 
-System.out.println("whose Roll Number: " + rollNumber); 
-} 
-} 
-public class SingleInheritance { 
-public static void main(String[] args) { 
-Student stu = new Student(); 
-stu.PersonInfo(); 
-stu.StudentInfo(); 
-} 
-}
-
-Write a Program to implement Multiple Inheritance  in Java 
-interface Person { 
-void Name(); 
-} 
-interface Employee { 
-void JobTitle(); 
-} 
-class Manager implements Person, Employee { 
-public void Name() { 
-System.out.println("Name: Diya"); 
-} 
-public void JobTitle() { 
-System.out.println("Job Title: Manager"); 
-} 
-} 
-public class MultipleInheritance { 
-public static void main(String[] args) { 
-Manager mgr = new Manager(); 
-mgr.Name(); 
-mgr.JobTitle(); 
-} 
-} 
-
-Write a program for Multilevel Inheritance in Java 
-class Tree { 
-void provideOxygen() { 
-System.out.println("Trees provide oxygen."); 
-} 
-} 
-class Fruittree extends Tree { 
-void bearFruit() { 
-System.out.println("This tree bears fruits."); 
-} 
-} 
-class Mangotree extends Fruittree { 
-void type() { 
-System.out.println("This is a Mango tree."); 
-} 
-} 
-public class MultilevelInheritance { 
-public static void main(String[] args) { 
-Mangotree mango = new Mangotree(); 
-System.out.println("Mango Tree:"); 
-mango.provideOxygen(); 
-mango.bearFruit(); 
-mango.type(); 
-} 
-}
-`,
-      8:`
-       Write a Java Program to Illustrate Automatic Type Conversion 
-Code:- 
-public class Automatictype { 
-    public static void main(String[] args) 
-    { 
-        int i = 100; 
-        long l = i; 
-        float f = l; 
-        System.out.println("Int value " + i); 
-        System.out.println("Long value " + l); 
-        System.out.println("Float value " + f); 
-    }   
-}
-    
-Write a Java program to illustrate Incompatible data Type for Explicit 
-Type Conversion 
-Code:- 
-public class Incompatibleconversion { 
-    public static void main(String[] args) { 
-        char ch = 'c'; 
-        int num = 88; 
-        ch = num; 
-    }     
-}
-    
- Write a Java program to Illustrate Explicit Type Conversion 
-Code:- 
-public class Explicittype { 
-    public static void main(String[] args) { 
-        double d = 100.04; 
-        long l = (long) d;  
-        int i = (int) l; 
+      4: ` def tower_of_hanoi(n, source, auxiliary, target): 
+    if n == 1: 
+        print(f"Move disk 1 from {source} to {target}") 
+        return 
+    tower_of_hanoi(n - 1, source, target, auxiliary) 
+    print(f"Move disk {n} from {source} to {target}") 
+    tower_of_hanoi(n - 1, auxiliary, source, target) 
  
-        System.out.println("Double value " + d); 
-        System.out.println("Long value " + l); 
-        System.out.println("Int value " + i); 
-    }   
-} 
-    
- Write a Java Program to Illustrate Conversion of Integer and Double to 
-Byte 
-Code:- 
-public class ByteConversion { 
-    public static void main(String args[]) { 
-        byte b; 
-        int i = 257; 
-        double d = 323.142; 
-        System.out.println("Conversion of int to byte."); 
-        b = (byte) i;   
-        System.out.println("i = " + i + " b = " + b); 
-        System.out.println("Conversion of double to byte."); 
-        b = (byte) d;   
-        System.out.println("d = " + d + " b= " + b); 
-    } 
-} 
-    
- Write a Java program to Illustrate Type Casting in Integer to Byte 
-Code:- 
-public class Typecasting { 
-    public static void main(String args[]) { 
-        byte b = 50; 
-        b = (byte)(b * 2);  
+num_disks = int(input("Enter the number of disks: ")) 
+tower_of_hanoi(num_disks, 'A', 'B', 'C')`,
+      5:`import random 
+def main(): 
+    rock_list = [] 
+    randpile = random.randint(2, 5) 
+    randrock = random.randint(1, 9) 
  
-        System.out.println(b); 
-    } 
-}`,
-      9:` Write a program to implement an user defined interface in Java.  
-Code:-  
-interface Calculator {  
-    int add(int a, int b);  
-}  
-class SimpleCalculator implements Calculator {  
-    @Override  
-    public int add(int a, int b) {  
-        return a + b;  
-    }  
-}  
-class user_defin_interface {  
-    public static void main(String[] args) {  
-        SimpleCalculator calculator = new SimpleCalculator();  
-        int sum = calculator.add(10, 5);  
-        System.out.println("Sum: " + sum);  
-    }  
-}  
-    
-`,
-      10:`Write a program in Java to show "Click Me" button, one text field and text area   
-Code:-  
-import java.awt.*;  
-import java.awt.event.ActionEvent;  
-import java.awt.event.ActionListener;  
-   
-public class Exp10 extends Frame {  
-    Exp10() {  
-        TextField textField = new TextField();  
-        textField.setBounds(20, 50, 200, 30);  
-  
-        TextArea textArea = new TextArea();  
-        textArea.setBounds(20, 100, 250, 100);  
-  
-        Button clickMeButton = new Button("Click Me");  
-        clickMeButton.setBounds(20, 220, 100, 30);  
-  
-        clickMeButton.addActionListener(new ActionListener() {  
-            @Override  
-            public void actionPerformed(ActionEvent e) {  
-                String inputText = textField.getText();  
-                textArea.append(inputText + "\n");  
-                textField.setText("");  
-            }  
-        });  
-  
-        add(textField);  
-        add(textArea);  
-        add(clickMeButton);  
-  
-        setSize(300, 300);  
-        setLayout(null);  
-        setVisible(true);  
-    }  
-  
-    public static void main(String[] args) {  
-        new Exp10();  
-    }  
-}  `,
-      12:`Write a JAVA program to implement the flow layout 
-import javax.swing.*; 
-import java.awt.*; 
-public class FlowLayoutExample { 
-public static void main(String[] args) { 
-JFrame frame = new JFrame("FlowLayout Example"); 
-frame.setLayout(new FlowLayout()); 
-frame.add(new JButton("Button 1")); 
-frame.add(new JButton("Button 2")); 
-frame.add(new JButton("Button 3")); 
-frame.pack(); 
-frame.setVisible(true); 
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-} 
-}
+    name1, name2 = get_player() 
+    player = name1   
+     
+    get_board(rock_list, randrock, randpile, player) 
+     
+    play_game(rock_list, randpile, randrock, name1, name2, player) 
+ 
+def get_player(): 
+    return input("Enter Player 1 name: "), input("Enter Player 2 name: ") 
+ 
+def get_board(rock_list, randrock, randpile, player): 
+    print("\nLet's look at the board now:") 
+    print("-" * 25) 
+    for i in range(0, randpile): 
+        randrock = random.randint(1, 8) 
+        print(f"Pile {i+1}: {'O' * randrock}")  # Fixed formatting 
+        rock_list.append(randrock) 
+    print("-" * 25) 
+    nim_sum(rock_list, randpile) 
+ 
+def get_valid_input(rock_list, randpile, player): 
+    while True: 
+        stones = input('{}, how many stones to remove? '.format(player)) 
+        piles = input('Pick a pile to remove from: ') 
+        if (stones and piles) and (stones.isdigit()) and (piles.isdigit()): 
+            if (int(stones) > 0) and (int(piles) <= len(rock_list)) and (int(piles) > 0):  # Fixed 'rockList' to 'rock_list' 
+                if (int(stones) <= rock_list[int(piles) - 1]): 
+                    break 
+        print("Hmmm. You entered an invalid value. Try again, {}.".format(player)) 
+     
+    rock_list[int(piles) - 1] -= int(stones) 
+    continue_game(rock_list, randpile, player) 
+ 
+def continue_game(rock_list, randpile, player): 
+    print("Let's look at the board now.") 
+    print("-" * 25) 
+    for i in range(0, randpile): 
+        print("Pile {}: {}".format(i + 1, 'O' * rock_list[i])) 
+    print("-" * 25) 
+     
+    if rock_list != [0] * len(rock_list): 
+        nim_sum(rock_list, randpile) 
+ 
+def play_game(rock_list, randpile, randrock, name1, name2, player): 
+    while True: 
+        get_valid_input(rock_list, randpile, player) 
+         
+        if rock_list == [0] * len(rock_list): 
+            print("{} is the winner of this round!".format(player)) 
+            user = input("Do you want to play again? Enter y for yes, anything else for no: ") 
+            if user.lower() == 'y': 
+                rock_list = []  # Reset rock_list 
+                randpile = random.randint(2, 5) 
+                player = name1  # Reset player to name1 
+                get_board(rock_list, randrock, randpile, player) 
+            else: 
+                break 
+        player = name2 if player == name1 else name1  # Fixed player switching logic 
+ 
+def nim_sum(rock_list, randpile): 
+    nim = 0 
+    for i in rock_list: 
+        nim ^= i  # Fixed nim sum calculation 
+    print("Hint: nim sum is {}.".format(nim)) 
+     
+    stones_to_remove = abs(max(rock_list) - nim) 
+     
+    if nim > 0: 
+        print("Pick {} stones from pile {}".format(stones_to_remove, 
+rock_list.index(max(rock_list)) + 1)) 
+    else: 
+        print("Pick all stones from pile {}".format(rock_list.index(max(rock_list)) + 1)) 
+ 
+if __name__ == "__main__": 
+    main() `,
+      6:`a = int(input("Enter jug A capacity: ")) 
+b = int(input("Enter jug B capacity: ")) 
+ai = int(input("Initially water in jug A: ")) 
+bi = int(input("Initially water in jug B: ")) 
+af = int(input("Final state of jug A: ")) 
+bf = int(input("Final state of jug B: ")) 
+ 
+print("\nList of Operations you can perform:") 
+print("1. Fill jug A completely") 
+print("2. Fill jug B completely") 
+print("3. Empty jug A completely") 
+print("4. Empty jug B completely") 
+print("5. Pour from jug A to jug B until jug B is full or jug A is empty") 
+print("6. Pour from jug B to jug A until jug A is full or jug B is empty") 
+print("7. Pour all from jug B into jug A") 
+print("8. Pour all from jug A into jug B") 
+ 
+while ai != af or bi != bf: 
+    op = int(input("\nEnter the operation (1-8): ")) 
+    if op == 1: 
+        ai = a 
+    elif op == 2: 
+        bi = b 
+    elif op == 3: 
+        ai = 0 
+    elif op == 4: 
+        bi = 0 
+    elif op == 5: 
+        transfer = min(ai, b - bi) 
+        ai -= transfer 
+        bi += transfer 
+    elif op == 6: 
+        transfer = min(bi, a - ai) 
+        bi -= transfer 
+        ai += transfer 
+    elif op == 7: 
+        transfer = min(bi, a - ai) 
+        ai += transfer 
+        bi -= transfer 
+    elif op == 8: 
+        transfer = min(ai, b - bi) 
+        bi += transfer 
+        ai -= transfer 
+    else: 
+        print("Invalid operation! Please choose a valid option.") 
+    print(f"Jug A: {ai}, Jug B: {bi}") 
+print("\nFinal state achieved!")`,
+      7:`print("\n") 
+print("\tGame Start\nNow the task is to move all of them to the right side of the river") 
+print("Rules:\n1. The boat can carry at most two people\n2. If cannibals' number is greater than missionaries, then the cannibals would eat the missionaries\n3. The boat cannot cross the river by itself with no people on board") 
+ 
+IM = 3  # IM = Left side Missionaries number 
+IC = 3  # IC = Left side Cannibals number 
+rM = 0  # rM = Right side Missionaries number 
+rC = 0  # rC = Right side Cannibals number 
+ 
+userM = 0  # userM = User input for number of missionaries for right to left side travel 
+userC = 0  # userC = User input for number of cannibals for right to left travel 
+k = 0 
+ 
+print("\nM MMCCC| --- | \n") 
+ 
+try: 
+    while True: 
+        while True: 
+            print("Left side -> right side river travel") 
+            # uM = user input for number of missionaries for left to right travel 
+            # uC = user input for number of cannibals for left to right travel 
+            uM = int(input("Enter number of Missionaries travel => ")) 
+            uC = int(input("Enter number of Cannibals travel => ")) 
+ 
+            if (uM == 0 and uC == 0): 
+                print("Empty travel not possible") 
+                print("Re-enter: ") 
+            elif ((uM + uC) <= 2 and (IM - uM) >= 0 and (IC - uC) >= 0): 
+                break 
+            else: 
+                print("Wrong input re-enter: ") 
+ 
+        IM -= uM 
+        IC -= uC 
+        rM += uM 
+        rC += uC 
+ 
+        print("\n") 
+        for i in range(0, IM): 
+            print("M ", end="") 
+        for i in range(0, IC): 
+            print("C ", end="") 
+        print("| --> | ", end="") 
+        for i in range(0, rM): 
+            print("M ", end="") 
+        for i in range(0, rC): 
+            print("C ", end="") 
+        print("\n") 
+ 
+        k += 1 
+ 
+        if ((IC == 3 and IM == 1) or (IC == 3 and IM == 2) or (IC == 2 and IM == 1) or  
+            (rC == 3 and rM == 1) or (rC == 3 and rM == 2) or (rC == 2 and rM == 1)): 
+            print("Cannibals eat missionaries:\nYou lost the game") 
+            break 
+ 
+        if (rM + rC) == 6: 
+            print("You won the game:\n\tCongrats") 
+            print("Total attempts:", k) 
+            break 
+ 
+        while True: 
+            print("Right side -> Left side river travel") 
+            userM = int(input("Enter number of Missionaries travel => ")) 
+            userC = int(input("Enter number of Cannibals travel => ")) 
+ 
+            if (userM == 0 and userC == 0): 
+                print("Empty travel not possible") 
+                print("Re-enter : ") 
+            elif ((userM + userC) <= 2 and (rM - userM) >= 0 and (rC - userC) >= 0): 
+                break 
+            else: 
+                print("Wrong input re-enter: ") 
+ 
+        IM += userM 
+        IC += userC 
+        rM -= userM 
+        rC -= userC 
+        k += 1 
+ 
+        print("\n") 
+        for i in range(0, IM): 
+            print("M ", end="") 
+        for i in range(0, IC): 
+            print("C ", end="") 
+        print("| <-- | ", end="") 
+        for i in range(0, rM): 
+            print("M ", end="") 
+        for i in range(0, rC): 
+            print("C ", end="") 
+        print("\n") 
+ 
+        if ((IC == 3 and IM == 1) or (IC == 3 and IM == 2) or (IC == 2 and IM == 1) or  
+            (rC == 3 and rM == 1) or (rC == 3 and rM == 2) or (rC == 2 and rM == 1)): 
+            print("Cannibals eat missionaries:\nYou lost the game") 
+            break 
+ 
+except EOFError as e: 
+    print("\nInvalid input, please retry !!") `,
+    8:`class State: 
+    def __init__(self, monkey, box, banana, on_box=False): 
+        self.monkey = monkey 
+        self.box = box 
+        self.banana = banana 
+        self.on_box = on_box 
+ 
+    def __str__(self): 
+        return f"Monkey: {self.monkey}, Box: {self.box}, Banana: {self.banana}, On Box:{self.on_box}" 
+ 
+def move_to_box(state): 
+    return State(state.box, state.box, state.banana, state.on_box) 
+ 
+def push_box(state): 
+    if state.monkey == state.box: 
+        return State("center", "center", state.banana, state.on_box) 
+    return state 
+ 
+def climb_box(state): 
+    if state.monkey == state.box: 
+        return State(state.box, state.box, state.banana, True) 
+    return state 
+ 
+def grab_banana(state): 
+    if state.on_box and state.box == "center" and state.banana == "center": 
+        print("Banana grabbed! ") 
+        return State(state.monkey, state.box, "grabbed", state.on_box) 
+    return state 
+ 
+def monkey_banana_problem(): 
+    initial_state = State("near door", "near window", "center") 
+    print("Initial State:\n", initial_state) 
+ 
+    state = move_to_box(initial_state) 
+    print("\nAfter moving to box:\n", state) 
+ 
+    state = push_box(state) 
+    print("\nAfter pushing the box:\n", state) 
+ 
+    state = climb_box(state) 
+    print("\nAfter climbing the box:\n", state) 
+ 
+    state = grab_banana(state) 
+    print("\nFinal State:\n", state) 
+ 
+if __name__ == "__main__": 
+    monkey_banana_problem()`,
+      9:` import random 
+ 
+class TicTacToe: 
+    def __init__(self): 
+        self.board = ['' for _ in range(9)] 
+        self.current_winner = None 
+ 
+    def print_board(self): 
+        for row in [self.board[i*3:(i+1)*3] for i in range(3)]: 
+            print('| ' + ' | '.join(row) + ' |') 
+ 
+    @staticmethod 
+    def print_board_nums(): 
+        number_board = [[str(i) for i in range(j*3, (j+1)*3)] for j in range(3)] 
+        for row in number_board: 
+            print('| ' + ' | '.join(row) + ' |') 
+ 
+    def available_moves(self): 
+        return [i for i, spot in enumerate(self.board) if spot == ''] 
+ 
+    def empty_squares(self): 
+        return '' in self.board 
+ 
+    def num_empty_squares(self): 
+        return self.board.count('') 
+ 
+    def make_move(self, square, letter): 
+        if self.board[square] == '': 
+            self.board[square] = letter 
+            if self.winner(square, letter): 
+                self.current_winner = letter 
+            return True 
+        return False 
+ 
+    def winner(self, square, letter): 
+        row_ind = square // 3 
+        row = self.board[row_ind*3:(row_ind+1)*3] 
+        if all([spot == letter for spot in row]): 
+            return True 
+ 
+        col_ind = square % 3 
+        col = [self.board[col_ind+i*3] for i in range(3)] 
+        if all([spot == letter for spot in col]): 
+            return True 
+ 
+        if square % 2 == 0: 
+            diagonal1 = [self.board[i] for i in [0, 4, 8]] 
+            if all([spot == letter for spot in diagonal1]): 
+                return True 
+            diagonal2 = [self.board[i] for i in [2, 4, 6]] 
+            if all([spot == letter for spot in diagonal2]): 
+                return True 
+         
+        return False 
+ 
+def play(game, x_player, o_player, print_game=True): 
+    if print_game: 
+        game.print_board_nums() 
+     
+    letter = 'X' 
+    while game.empty_squares(): 
+        if letter == 'O': 
+            square = o_player.get_move(game) 
+        else: 
+            square = x_player.get_move(game) 
+         
+        if game.make_move(square, letter): 
+            if print_game: 
+                print(letter + f' makes a move to square {square}') 
+                game.print_board() 
+                print() 
+             
+            if game.current_winner: 
+                if print_game: 
+                    print(letter + ' wins!') 
+                return letter 
+             
+            letter = 'O' if letter == 'X' else 'X' 
+     
+    if print_game: 
+        print("It's a tie!") 
+ 
+class HumanPlayer: 
+    def __init__(self, letter): 
+        self.letter = letter 
+ 
+    def get_move(self, game): 
+        valid_square = False 
+        val = None 
+        while not valid_square: 
+            square = input(self.letter + "'s turn. Input move (0-8): ") 
+            try: 
+                val = int(square) 
+                if val not in game.available_moves(): 
+                    raise ValueError 
+                valid_square = True 
+            except ValueError: 
+                print('Invalid square. Try again.') 
+        return val 
+ 
+class RandomComputerPlayer: 
+    def __init__(self, letter): 
+        self.letter = letter 
+ 
+    def get_move(self, game): 
+        square = random.choice(game.available_moves()) 
+        return square 
+ 
+# Example usage 
+if __name__ == "__main__": 
+    x_player = HumanPlayer('X') 
+    o_player = RandomComputerPlayer('O') 
+    t = TicTacToe() 
+    play(t, x_player, o_player, print_game=True)`,
+      10:`tab = [] 
+result = [] 
+goalList = ["a", "b", "c", "d", "e"] 
+ 
+def parSolution(N): 
+    for i in range(N): 
+        if goalList[i] != result[i]: 
+            return False 
+    return True 
+ 
+def onblock(index, count): 
+    if count == len(goalList) + 1: 
+        return True 
+     
+    if index >= len(tab): 
+        return False 
+     
+    block = tab[index] 
+    result.append(block) 
+    print(result) 
+     
+    if parSolution(count): 
+        print("Pushed a result solution") 
+        tab.remove(block) 
+        if onblock(0, count + 1): 
+            return True 
+        tab.insert(index, block) 
+     
+    result.pop() 
+    return onblock(index + 1, count) 
+ 
+def ontab(problem): 
+    if len(problem) != 0: 
+        tab.append(problem.pop()) 
+        ontab(problem) 
+ 
+def goal_stack_planning(problem): 
+    ontab(problem) 
+    if onblock(0, 1): 
+        print("Final Result:", result) 
+ 
+if __name__ == "__main__": 
+    problem = ["c", "a", "e", "d", "b"] 
+    print("Goal Problem") 
+    for k, j in zip(goalList, problem): 
+        print(k + " " + j) 
+    goal_stack_planning(problem) 
+    print("Result Solution:") 
+    print(result)  `,
+      11:`import copy 
+import time 
+ 
+class State: 
+    def __init__(self, first_stack, second_stack, total_num, moves=None): 
+        if moves is None: 
+            moves = [] 
+        self.first_stack = first_stack 
+        self.second_stack = second_stack 
+        self.total_num = total_num 
+        self.moves = moves 
+ 
+    def __eq__(self, other): 
+        return ( 
+            self.first_stack == other.first_stack and 
+            self.second_stack == other.second_stack and 
+            self.total_num == other.total_num and 
+            self.moves == other.moves 
+        ) 
+ 
+    def goal_state_move(self): 
+        while self.difference() > 0:  # Keep selecting moves until goal is reached 
+            self = self.select_move() 
+        return self.moves 
+ 
+    def select_move(self): 
+        for index, stack in enumerate(self.first_stack): 
+            for index2, stack2 in enumerate(self.first_stack): 
+                if index != index2: 
+                    curr_table, move = self.valid_state_move(self.first_stack, index, index2) 
+                    new_state = State(curr_table, self.second_stack, self.total_num, 
+copy.copy(self.moves)) 
+                    new_state.moves.append(move) 
+                    if new_state.difference() < self.difference(): 
+                        return new_state 
+        for index, stack in enumerate(self.first_stack): 
+            if len(stack) > 1: 
+                curr_table, move = self.valid_state_move(self.first_stack, index, -1) 
+                new_state = State(curr_table, self.second_stack, self.total_num, 
+copy.copy(self.moves)) 
+                new_state.moves.append(move) 
+                if new_state.difference() <= self.difference(): 
+                    return new_state 
+        return self  # Return current state if no valid move found 
+ 
+    def valid_state_move(self, table, start_index, end_index): 
+        temp_table = copy.deepcopy(table) 
+        left = temp_table[start_index] 
+        top_block = left.pop() 
+        if end_index < 0: 
+            temp_table.append([top_block])  # Move to a new stack 
+            move = (top_block, "Table") 
+        else: 
+            right = temp_table[end_index] 
+            move = (top_block, right[-1] if right else "Table") 
+            right.append(top_block) 
+        if len(left) == 0: 
+            temp_table.remove(left) 
+        return temp_table, move 
+ 
+    def difference(self): 
+        same_num = 0 
+        for left in self.first_stack: 
+            for right in self.second_stack: 
+                index = 0 
+                while index < len(left) and index < len(right) and left[index] == right[index]: 
+                    same_num += 1 
+                    index += 1 
+        return self.total_num - same_num 
+ 
+class BlockWorldAgent: 
+    def __init__(self): 
+        pass 
+ 
+    def solve(self, initial_arrangement, goal_arrangement): 
+        start = time.time() 
+        total_num = sum(len(stack) for stack in initial_arrangement) 
+        state = State(initial_arrangement, goal_arrangement, total_num) 
+        solution = state.goal_state_move() 
+        end = time.time() 
+        print(f"Running time: {(end - start) * 1000:.6f}ms") 
+        return solution
 
-Write a JAVA Program to implement the Border layout 
-import javax.swing.*; 
-import java.awt.*; 
-public class BorderLayoutExample { 
-public static void main(String[] args) { 
-JFrame frame = new JFrame("BorderLayout Example"); 
-frame.setLayout(new BorderLayout()); 
-frame.add(new JButton("North"), BorderLayout.NORTH); 
-frame.add(new JButton("South"), BorderLayout.SOUTH); 
-frame.add(new JButton("East"), BorderLayout.EAST); 
-frame.add(new JButton("West"), BorderLayout.WEST); 
-frame.add(new JButton("Center"), BorderLayout.CENTER); 
-frame.pack(); 
-frame.setVisible(true); 
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-}
+        # Test Cases 
+def test(): 
+    test_agent = BlockWorldAgent() 
+    initial_arrangement_1 = [["A", "B", "C"], ["D", "E"]] 
+    goal_arrangement_1 = [["A", "C"], ["D", "E", "B"]] 
+    goal_arrangement_2 = [["A", "B", "C", "D", "E"]] 
+    goal_arrangement_3 = [["D", "E", "A", "B", "C"]] 
+    goal_arrangement_4 = [["C", "D"], ["E", "A", "B"]] 
+     
+    print(test_agent.solve(initial_arrangement_1, goal_arrangement_1)) 
+    print(test_agent.solve(initial_arrangement_1, goal_arrangement_2)) 
+    print(test_agent.solve(initial_arrangement_1, goal_arrangement_3)) 
+    print(test_agent.solve(initial_arrangement_1, goal_arrangement_4)) 
+ 
+if __name__ == "__main__": 
+    test() `,
+      12:`:- dynamic location/2.
+location(table, source).
+location(object1, on_table).
+location(object2, on_table).
+location(robot, source).
 
-Write a JAVA Program to implement the Grid layout 
-import javax.swing.*; 
-import java.awt.*; 
-public class GridLayoutExample { 
-public static void main(String[] args) { 
-JFrame frame = new JFrame("GridLayout Example"); 
-frame.setLayout(new GridLayout(3, 3)); 
-for (int i = 1; i <= 9; i++) { 
-frame.add(new JButton("Button " + i)); 
-} 
-frame.pack(); 
-frame.setVisible(true); 
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-} 
-}`,
-      13:`]Write a JAVA Program to implement the Card layout 
-import javax.swing.*; 
-import java.awt.*; 
-import java.awt.event.ActionEvent; 
-import java.awt.event.ActionListener; 
-public class CardLayoutExample { 
-public static void main(String[] args) { 
-JFrame frame = new JFrame("CardLayout Example"); 
-CardLayout cardLayout = new CardLayout(); 
-JPanel cardPanel = new JPanel(cardLayout); 
-JButton button1 = new JButton("Card 1"); 
-JButton button2 = new JButton("Card 2"); 
-JButton button3 = new JButton("Card 3"); 
-cardPanel.add(button1, "Card 1"); 
-cardPanel.add(button2, "Card 2"); 
-cardPanel.add(button3, "Card 3"); 
-frame.add(cardPanel); 
-frame.pack(); 
-frame.setVisible(true); 
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-button1.addActionListener(e -> cardLayout.show(cardPanel, "Card 2")); 
-button2.addActionListener(e -> cardLayout.show(cardPanel, "Card 3")); 
-button3.addActionListener(e -> cardLayout.show(cardPanel, "Card 1")); 
-} 
-}
+walk_to(Location) :-
+    retract(location(robot, _)),
+    assert(location(robot, Location)),
+    write('Robot walked to '), write(Location), nl.
 
-]Write a JAVA Program to implement the Box layout 
-import java.awt.*; 
-import javax.swing.*; 
-public class BoxLayoutExample1 extends Frame { 
-Button buttons[]; 
-public BoxLayoutExample1 () { 
-buttons = new Button [5]; 
-for (int i = 0;i<5;i++) { 
-buttons[i] = new Button ("Button " + (i + 1)); 
-// adding the buttons so that it can be displayed 
-add (buttons[i]); 
-} 
-// the buttons will be placed horizontally 
-setLayout (new BoxLayout (this, BoxLayout.Y_AXIS)); 
-setSize(400,400); 
-setVisible(true); 
-} 
-// main method 
-public static void main(String args[]){ 
-BoxLayoutExample1 b=new BoxLayoutExample1(); 
-} 
-}
+pick_up(Object) :-
+    location(robot, source),
+    location(Object, on_table),
+    retract(location(Object, on_table)),
+    assert(location(Object, held)),
+    write('Robot picked up '), write(Object), nl.
 
-Write a JAVA Program to implement the Gridbag layout 
-import javax.swing.*; 
-import java.awt.*; 
-public class GridBagLayoutExample { 
-public static void main(String[] args) { 
-JFrame frame = new JFrame("GridBagLayout Example"); 
-JPanel panel = new JPanel(new GridBagLayout()); 
-GridBagConstraints constraints = new GridBagConstraints(); 
-constraints.fill = GridBagConstraints.HORIZONTAL; 
-JButton button1 = new JButton("Button 1"); 
-JButton button2 = new JButton("Button 2"); 
-constraints.gridx = 0; 
-constraints.gridy = 0; 
-panel.add(button1, constraints); 
-constraints.gridx = 1; 
-panel.add(button2, constraints); 
-frame.add(panel); 
-frame.pack(); 
-frame.setVisible(true); 
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-} 
-}
-`,
-      11:`Write a JAVA program to design a frame in java and implement the given layout 
-import javax.swing.*; 
-public class JframeExample { 
-public static void main(String[] args) { 
-// Create JFrame 
-JFrame frame = new JFrame("JFrame Example"); 
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-frame.setSize(500, 400); 
-frame.setLayout(null); // Using null layout for manual positioning 
-// Create MenuBar 
-JMenuBar menuBar = new JMenuBar(); 
-JMenu fileMenu = new JMenu("File"); 
-JMenuItem openItem = new JMenuItem("Open"); 
-JMenuItem exitItem = new JMenuItem("Exit"); 
-// Add items to File menu 
-fileMenu.add(openItem); 
-fileMenu.add(exitItem); 
-menuBar.add(fileMenu); 
-frame.setJMenuBar(menuBar); 
-// Create Button 
-JButton button = new JButton("Click Me"); 
-button.setBounds(380, 20, 100, 30); // Adjusted position to match image 
-// Exit action 
-exitItem.addActionListener(e -> System.exit(0)); 
-// Add components to JFrame 
-frame.add(button); 
-// Make frame visible 
-frame.setVisible(true); 
-} 
-}`
+put_down(Object) :-
+    location(Object, held),
+    retract(location(Object, held)),
+    assert(location(Object, floor)),
+    write('Robot placed '), write(Object), write(' on the floor.'), nl.
+
+push(table, goal) :-
+    location(robot, source),
+    location(table, source),
+    retract(location(table, source)),
+    assert(location(table, goal)),
+    write('Robot pushed the table to the goal.'), nl.
+
+carry(Object, goal) :-
+    location(robot, source),
+    location(Object, floor),
+    retract(location(Object, floor)),
+    assert(location(Object, held)),
+    write('Robot picked up '), write(Object), write(' from the floor.'), nl,
+    walk_to(goal),
+    place(Object, table).
+
+place(Object, table) :-
+    location(robot, goal),
+    location(table, goal),
+    location(Object, held),
+    retract(location(Object, held)),
+    assert(location(Object, on_table)),
+    write('Robot placed '), write(Object), write(' on the table at the goal.'), nl.
+
+shift_all :-
+    walk_to(source),
+    pick_up(object1),
+    put_down(object1),
+    pick_up(object2),
+    put_down(object2),
+    push(table, goal),
+    walk_to(source),
+    carry(object1, goal),
+    carry(object2, goal),
+    write('All objects and table successfully moved to the goal.'), nl.
+`
+    ,
     };
 
     function showExperiment(num) {
       document.getElementById('content').textContent = experiments[num] || "Experiment not found.";
+    }
+
+    function copyContent() {
+      const text = document.getElementById('content').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        
+      }).catch(err => {
+        alert('Failed to copy: ' + err);
+      });
     }
   </script>
 
